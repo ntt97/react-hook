@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import React, { useState } from 'react';
+import './App.css'
+//import ColorBox from './components/ColorBox';
+import ToDoList from './components/TodoList'
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [toDos, setToDos] = useState([
+        { id: 1, name: "aaaaaaaaaaaaaaaaaaaaaaa" },
+        { id: 2, name: "bbbbbbbbbbbbbbbb" },
+        { id: 3, name: "ccccccccccccccccccc" },
+        { id: 4, name: "dddddddddddddddddddd" },
+
+
+    ])
+    function onHandleClick(id){
+        let newToDos = [...toDos];
+        let index = newToDos.findIndex(item=>item.id===id);
+        newToDos.splice(index,1);
+        setToDos(newToDos);
+    }
+    return (
+        <div className="App" >
+            <ToDoList toDos={toDos}  onHandleClick ={onHandleClick}/>
+        </div>
+    );
 }
 
 export default App;
