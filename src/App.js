@@ -1,9 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css'
-//import ColorBox from './components/ColorBox';
-import ToDoList from './components/TodoList'
-import FormToDo from './components/FormToDo'
+// //import ColorBox from './components/ColorBox';
+// import ToDoList from './components/TodoList'
+// import FormToDo from './components/FormToDo'
+
+import queryString from 'query-string'
+
+import Pagination from './components/Pagination'
+
+
+import Test from './components/Test'
 function App() {
+    const [products, setProducts] = useState([]);
+    const [pagination, setPagination] = useState({ _page: 1, _limit: 10, _totalRows: 11 })
+    const [filters, setFilter] = useState({
+        _page: 1,
+        _limit: 10
+    })
+    function onPageChange(newPage) {
+
+        setFilter({
+            ...filters,
+            _page:newPage
+        })
+    }
+    useEffect(() => {
+
+        try {
+            async function getProducts() {
+                const paramsString = queryString.stringify(filters);
+                const response = await fetch(`http://js-post-api.herokuapp.com/api/posts?${paramsString}`);
+                const responseJson = await response.json();
+                setProducts(responseJson.data);
+                setPagination(responseJson.pagination);
+
+            }
+            getProducts();
+        } catch (error) {
+
+        }
+
+    }, [filters])
+
+
     const [toDos, setToDos] = useState([
         { id: 1, name: "aaaaaaaaaaaaaaaaaaaaaaa" },
         { id: 2, name: "bbbbbbbbbbbbbbbb" },
@@ -23,15 +62,17 @@ function App() {
             ...item,
             id: toDos.length + 1,
         }
-        let newToDos =[...toDos];
-            newToDos.push(newTodo);
+        let newToDos = [...toDos];
+        newToDos.push(newTodo);
         setToDos(newToDos);
-        
+
+
     }
     return (
         <div className="App" >
-            <FormToDo onSubmit={onSubmit} />
-            <ToDoList toDos={toDos} onHandleClick={onHandleClick} />
+
+            <Test products={products} />
+            <Pagination pagination={pagination} onPageChange={onPageChange} />
         </div>
     );
 }
